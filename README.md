@@ -34,12 +34,48 @@ your family. Here is what it could look like: { “data” :
 \[{“Name”:“Dad”, “Birthday”:“April 2”}, {“Name”:“Mom”,
 “Birthday”:“March 7”}\]}.
 
-### Where is JSON Data used?
+### Where and why is JSON Data used?
 
 JSON Data is not dependent on any specific programming language and
-thus, can be
+thus, can be read by many different programming languages.JSON Data is
+universal and is typically used for transmitting data from a server and
+a website. For example, in this vignette, I will download JSON Data from
+the NHL API (“Application Programming Interface”), which I will then
+read using `R`.
 
 *References for paragraph above:
 [JSON.org](https://www.json.org/json-en.html),
 [Wikipedia.com](https://en.wikipedia.org/wiki/JSON#Data_types_and_syntax),
+[stackoverflow](https://stackoverflow.com/questions/383692/what-is-json-and-why-would-i-use-it#:~:text=The%20JSON%20format%20is%20often,as%20an%20alternative%20to%20XML.&text=JSON%20is%20JavaScript%20Object%20Notation.),
 and [NHL Franchise JSON](https://records.nhl.com/site/api/franchise).*
+
+## How to Read JSON Data?
+
+There are 3 packages that allow `R` to read JSON Data. 1. `jsonlite`, 2.
+`httr` and 3.
+
+# NHL API
+
+Below is the code that will be used to create functions to read the JSON
+data.
+
+Here is the code to create the Base URL that will begin each of our
+functions, used to access the NHL API.
+
+## Function to Access Franchise Data
+
+    ## # A tibble: 38 x 2
+    ##    data$id $firstSeasonId $lastSeasonId $mostRecentTeam~ $teamCommonName
+    ##      <int>          <int>         <int>            <int> <chr>          
+    ##  1       1       19171918            NA                8 Canadiens      
+    ##  2       2       19171918      19171918               41 Wanderers      
+    ##  3       3       19171918      19341935               45 Eagles         
+    ##  4       4       19191920      19241925               37 Tigers         
+    ##  5       5       19171918            NA               10 Maple Leafs    
+    ##  6       6       19241925            NA                6 Bruins         
+    ##  7       7       19241925      19371938               43 Maroons        
+    ##  8       8       19251926      19411942               51 Americans      
+    ##  9       9       19251926      19301931               39 Quakers        
+    ## 10      10       19261927            NA                3 Rangers        
+    ## # ... with 28 more rows, and 2 more variables: $teamPlaceName <chr>,
+    ## #   total <int>
