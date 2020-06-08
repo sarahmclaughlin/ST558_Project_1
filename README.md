@@ -156,3 +156,139 @@ team_totals <- function(){
     ## 10    10          17      5 Pittsbu~         381       NA      111         82
     ## # ... with 94 more rows, and 3 more variables: roadTies <int>, roadWins <int>,
     ## #   roadLosses <int>
+
+### Franchise Specific Data Function
+
+``` r
+One_Franchise <- function(ID){
+
+  # Create full URL 
+    tabName <- "franchise-season-records?cayenneExp=franchiseId="
+    fullURL <- paste0(baseURL, "/", tabName, ID)
+    
+  # Use GET function to pull data  
+    GETdata <- GET(fullURL)
+    txtData <- content(GETdata, "text")
+    JData <- fromJSON(txtData, flatten = TRUE)
+  
+  # Make it a tibble  
+    J_Data <- tbl_df(JData$data)
+    
+  # Query Data  
+    Data <- J_Data%>%
+      select("franchiseId", "franchiseName", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
+
+  # Return data set 
+    return(Data)
+}
+```
+
+**Data for the New Jersey Franchise**
+
+    ## # A tibble: 1 x 8
+    ##   franchiseId franchiseName fewestLosses fewestTies fewestWins mostLosses
+    ##         <int> <chr>                <int>      <int>      <int>      <int>
+    ## 1          23 New Jersey D~           19          3         12         56
+    ## # ... with 2 more variables: mostTies <int>, mostWins <int>
+
+### Franchise Specific Goalie Function
+
+``` r
+goalie <- function(ID){
+
+  # Create full URL 
+    tabName <- "franchise-goalie-records?cayenneExp=franchiseId="
+    fullURL <- paste0(baseURL, "/", tabName, ID)
+    
+  # Use GET function to pull data  
+    GETdata <- GET(fullURL)
+    txtData <- content(GETdata, "text")
+    JData <- fromJSON(txtData, flatten = TRUE)
+  
+  # Make it a tibble  
+    J_Data <- tbl_df(JData$data)
+    
+  # Query Data  
+   # Data <- J_Data%>%
+      #select("franchiseId", "franchiseName", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
+
+  # Return data set 
+    return(J_Data)
+}
+```
+
+**Goalie Data for New Jersey Franchise**
+
+    ## # A tibble: 27 x 29
+    ##       id activePlayer firstName franchiseId franchiseName gameTypeId gamesPlayed
+    ##    <int> <lgl>        <chr>           <int> <chr>              <int>       <int>
+    ##  1   266 FALSE        Martin             23 New Jersey D~          2        1259
+    ##  2   368 FALSE        Sean               23 New Jersey D~          2         162
+    ##  3   409 FALSE        Doug               23 New Jersey D~          2          84
+    ##  4   493 FALSE        Ron                23 New Jersey D~          2          81
+    ##  5   506 FALSE        Peter              23 New Jersey D~          2          36
+    ##  6   510 FALSE        Bill               23 New Jersey D~          2          22
+    ##  7   514 FALSE        Roland             23 New Jersey D~          2           1
+    ##  8   518 FALSE        Lindsay            23 New Jersey D~          2           9
+    ##  9   535 FALSE        Phil               23 New Jersey D~          2          34
+    ## 10   664 FALSE        Michel             23 New Jersey D~          2          24
+    ## # ... with 17 more rows, and 22 more variables: lastName <chr>, losses <int>,
+    ## #   mostGoalsAgainstDates <chr>, mostGoalsAgainstOneGame <int>,
+    ## #   mostSavesDates <chr>, mostSavesOneGame <int>, mostShotsAgainstDates <chr>,
+    ## #   mostShotsAgainstOneGame <int>, mostShutoutsOneSeason <int>,
+    ## #   mostShutoutsSeasonIds <chr>, mostWinsOneSeason <int>,
+    ## #   mostWinsSeasonIds <chr>, overtimeLosses <int>, playerId <int>,
+    ## #   positionCode <chr>, rookieGamesPlayed <int>, rookieShutouts <int>,
+    ## #   rookieWins <int>, seasons <int>, shutouts <int>, ties <int>, wins <int>
+
+### Franchise Specific Skater Function
+
+``` r
+skater <- function(ID){
+
+  # Create full URL 
+    tabName <- "franchise-season-records?cayenneExp=franchiseId="
+    fullURL <- paste0(baseURL, "/", tabName, ID)
+    
+  # Use GET function to pull data  
+    GETdata <- GET(fullURL)
+    txtData <- content(GETdata, "text")
+    JData <- fromJSON(txtData, flatten = TRUE)
+  
+  # Make it a tibble  
+    J_Data <- tbl_df(JData$data)
+    
+  # Query Data  
+    #Data <- J_Data%>%
+     #select("franchiseId", "franchiseName", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
+
+  # Return data set 
+    return(J_Data)
+}
+```
+
+**Franchise Specific Skater Data**
+
+    ## # A tibble: 1 x 57
+    ##      id fewestGoals fewestGoalsAgai~ fewestGoalsAgai~ fewestGoalsSeas~
+    ##   <int>       <int>            <int> <chr>            <chr>           
+    ## 1     1         174              164 2003-04 (82)     2010-11 (82)    
+    ## # ... with 52 more variables: fewestLosses <int>, fewestLossesSeasons <chr>,
+    ## #   fewestPoints <int>, fewestPointsSeasons <chr>, fewestTies <int>,
+    ## #   fewestTiesSeasons <chr>, fewestWins <int>, fewestWinsSeasons <chr>,
+    ## #   franchiseId <int>, franchiseName <chr>, homeLossStreak <int>,
+    ## #   homeLossStreakDates <chr>, homePointStreak <int>,
+    ## #   homePointStreakDates <chr>, homeWinStreak <int>, homeWinStreakDates <chr>,
+    ## #   homeWinlessStreak <int>, homeWinlessStreakDates <chr>, lossStreak <int>,
+    ## #   lossStreakDates <chr>, mostGameGoals <int>, mostGameGoalsDates <chr>,
+    ## #   mostGoals <int>, mostGoalsAgainst <int>, mostGoalsAgainstSeasons <chr>,
+    ## #   mostGoalsSeasons <chr>, mostLosses <int>, mostLossesSeasons <chr>,
+    ## #   mostPenaltyMinutes <int>, mostPenaltyMinutesSeasons <chr>,
+    ## #   mostPoints <int>, mostPointsSeasons <chr>, mostShutouts <int>,
+    ## #   mostShutoutsSeasons <chr>, mostTies <int>, mostTiesSeasons <chr>,
+    ## #   mostWins <int>, mostWinsSeasons <chr>, pointStreak <int>,
+    ## #   pointStreakDates <chr>, roadLossStreak <int>, roadLossStreakDates <chr>,
+    ## #   roadPointStreak <int>, roadPointStreakDates <chr>, roadWinStreak <int>,
+    ## #   roadWinStreakDates <chr>, roadWinlessStreak <int>,
+    ## #   roadWinlessStreakDates <chr>, winStreak <int>, winStreakDates <chr>,
+    ## #   winlessStreak <int>, winlessStreakDates <chr>
