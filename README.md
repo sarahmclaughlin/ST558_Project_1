@@ -62,20 +62,97 @@ data.
 Here is the code to create the Base URL that will begin each of our
 functions, used to access the NHL API.
 
-## Function to Access Franchise Data
+``` r
+baseURL <- "https://records.nhl.com/site/api"
+```
 
-    ## # A tibble: 38 x 2
-    ##    data$id $firstSeasonId $lastSeasonId $mostRecentTeam~ $teamCommonName
-    ##      <int>          <int>         <int>            <int> <chr>          
-    ##  1       1       19171918            NA                8 Canadiens      
-    ##  2       2       19171918      19171918               41 Wanderers      
-    ##  3       3       19171918      19341935               45 Eagles         
-    ##  4       4       19191920      19241925               37 Tigers         
-    ##  5       5       19171918            NA               10 Maple Leafs    
-    ##  6       6       19241925            NA                6 Bruins         
-    ##  7       7       19241925      19371938               43 Maroons        
-    ##  8       8       19251926      19411942               51 Americans      
-    ##  9       9       19251926      19301931               39 Quakers        
-    ## 10      10       19261927            NA                3 Rangers        
-    ## # ... with 28 more rows, and 2 more variables: $teamPlaceName <chr>,
-    ## #   total <int>
+## Functions to Access Data from NHL API
+
+### Franchise Data
+
+``` r
+# Create function  
+franchise <- function( ){
+
+  # Create full URL
+    tabName <- "franchise"
+    fullURL <- paste0(baseURL, "/", tabName)
+
+  # Use GET function to pull data.  
+    GETdata <- GET(fullURL)
+    txtData <- content(GETdata, "text")
+    JData <- fromJSON(txtData, flatten = TRUE)
+
+  # Make it a tibble  
+    J_Data <- tbl_df(JData$data) 
+
+  # Query Data
+    Data <- J_Data %>% select("id", "firstSeasonId", "lastSeasonId", "teamCommonName") %>% collect()
+
+  # Give output 
+    return(Data)
+}
+```
+
+**Franchise Data Set**
+
+    ## # A tibble: 38 x 4
+    ##       id firstSeasonId lastSeasonId teamCommonName
+    ##    <int>         <int>        <int> <chr>         
+    ##  1     1      19171918           NA Canadiens     
+    ##  2     2      19171918     19171918 Wanderers     
+    ##  3     3      19171918     19341935 Eagles        
+    ##  4     4      19191920     19241925 Tigers        
+    ##  5     5      19171918           NA Maple Leafs   
+    ##  6     6      19241925           NA Bruins        
+    ##  7     7      19241925     19371938 Maroons       
+    ##  8     8      19251926     19411942 Americans     
+    ##  9     9      19251926     19301931 Quakers       
+    ## 10    10      19261927           NA Rangers       
+    ## # ... with 28 more rows
+
+### Franchise Team Totals Function
+
+``` r
+team_totals <- function(){
+
+  # Create full URL 
+    tabName <- "franchise-team-totals"
+    fullURL <- paste0(baseURL, "/", tabName)
+    
+  # Use GET function to pull data  
+    GETdata <- GET(fullURL)
+    txtData <- content(GETdata, "text")
+    JData <- fromJSON(txtData, flatten = TRUE)
+  
+  # Make it a tibble  
+    J_Data <- tbl_df(JData$data)
+    
+  # Query Data  
+    Data <- J_Data %>% 
+      group_by(franchiseID) %>% 
+      select("id", "franchiseId", "teamId", "teamName", "gamesPlayed", "homeTies", "homeWins", "homeLosses", "roadTies", "roadWins", "roadLosses") %>%
+      collect()
+
+  # Return data set 
+    return(Data)
+    }
+```
+
+**Team Totals Data Set**
+
+    ## # A tibble: 104 x 11
+    ##       id franchiseId teamId teamName gamesPlayed homeTies homeWins homeLosses
+    ##    <int>       <int>  <int> <chr>          <int>    <int>    <int>      <int>
+    ##  1     1          23      1 New Jer~        2937       96      783        507
+    ##  2     2          23      1 New Jer~         257       NA       74         53
+    ##  3     3          22      2 New Yor~        3732      170      942        674
+    ##  4     4          22      2 New Yor~         272       NA       84         46
+    ##  5     5          10      3 New Yor~        6504      448     1600       1132
+    ##  6     6          10      3 New Yor~         515        1      137        103
+    ##  7     7          16      4 Philade~         433       NA      131         93
+    ##  8     8          16      4 Philade~        4115      193     1204        572
+    ##  9     9          17      5 Pittsbu~        4115      205     1116        679
+    ## 10    10          17      5 Pittsbu~         381       NA      111         82
+    ## # ... with 94 more rows, and 3 more variables: roadTies <int>, roadWins <int>,
+    ## #   roadLosses <int>
