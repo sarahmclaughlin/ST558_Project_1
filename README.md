@@ -62,6 +62,8 @@ data.
 Here is the code to create the Base URL that will begin each of our
 functions, used to access the NHL API.
 
+### Base URL Code (baseURL)
+
 ``` r
 baseURL <- "https://records.nhl.com/site/api"
 ```
@@ -69,6 +71,8 @@ baseURL <- "https://records.nhl.com/site/api"
 ## Functions to Access Data from NHL API
 
 ### Franchise Data
+
+The function (`franchise()`) below accesses the NHL Franchise Data.
 
 ``` r
 # Create function  
@@ -94,7 +98,12 @@ franchise <- function( ){
 }
 ```
 
-**Franchise Data Set**
+**Franchise Data Set (franchiseData)**
+
+``` r
+franchiseData <- franchise( )
+franchiseData
+```
 
     ## # A tibble: 38 x 4
     ##       id firstSeasonId lastSeasonId teamCommonName
@@ -292,3 +301,50 @@ skater <- function(ID){
     ## #   roadWinStreakDates <chr>, roadWinlessStreak <int>,
     ## #   roadWinlessStreakDates <chr>, winStreak <int>, winStreakDates <chr>,
     ## #   winlessStreak <int>, winlessStreakDates <chr>
+
+# Exploratory Analysis of Data Sets
+
+## Franchise Data (franchiseData)
+
+Here, I will compare the number of hockey teams that are currently
+playing and those that are not. I will do so by creating another
+variable (called `Current`) using the `mutate` and `ifelse` functions.
+Once I have created that variable, I will compare the factors in a bar
+graph.
+
+### Code to Create `Current`
+
+``` r
+franchiseData <- 
+  franchiseData %>% 
+  mutate(Current = ifelse(is.na(lastSeasonId), "Yes", "No"))
+```
+
+#### Print Resulting Data Set
+
+    ## # A tibble: 38 x 5
+    ##       id firstSeasonId lastSeasonId teamCommonName Current
+    ##    <int>         <int>        <int> <chr>          <chr>  
+    ##  1     1      19171918           NA Canadiens      Yes    
+    ##  2     2      19171918     19171918 Wanderers      No     
+    ##  3     3      19171918     19341935 Eagles         No     
+    ##  4     4      19191920     19241925 Tigers         No     
+    ##  5     5      19171918           NA Maple Leafs    Yes    
+    ##  6     6      19241925           NA Bruins         Yes    
+    ##  7     7      19241925     19371938 Maroons        No     
+    ##  8     8      19251926     19411942 Americans      No     
+    ##  9     9      19251926     19301931 Quakers        No     
+    ## 10    10      19261927           NA Rangers        Yes    
+    ## # ... with 28 more rows
+
+### Code to Create Bar Graph
+
+``` r
+g <- ggplot(franchiseData, aes(Current))
+
+g + geom_bar(aes(fill = Current)) +
+  labs(title = "Comparison of Former Teams to Current Teams", x = "Currently Playing?") + 
+  scale_fill_discrete(name = " ")
+```
+
+![](README_files/figure-gfm/current%20bar%20graph-1.png)<!-- -->
