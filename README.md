@@ -148,7 +148,7 @@ team_totals <- function(){
     }
 ```
 
-**Team Totals Data Set**
+**Team Totals Data Set (totalsData)**
 
     ## # A tibble: 104 x 11
     ##       id franchiseId teamId teamName gamesPlayed homeTies homeWins homeLosses
@@ -348,3 +348,16 @@ g + geom_bar(aes(fill = Current)) +
 ```
 
 ![](README_files/figure-gfm/current%20bar%20graph-1.png)<!-- -->
+
+## Team Totals Data Set (totalsData)
+
+Here, I will compare the number of games won at home versus those won on
+the road.
+
+``` r
+g <- ggplot(totalsData, aes(x = homeWins, y = roadWins))
+
+g + geom_point()
+```
+
+![](README_files/figure-gfm/wins%20boxplots-1.png)<!-- -->
