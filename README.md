@@ -139,7 +139,7 @@ team_totals <- function(){
     
   # Query Data  
     Data <- J_Data %>% 
-      group_by(franchiseID) %>% 
+      group_by(franchiseId) %>% 
       select("id", "franchiseId", "teamId", "teamName", "gamesPlayed", "homeTies", "homeWins", "homeLosses", "roadTies", "roadWins", "roadLosses") %>%
       collect()
 
@@ -151,6 +151,7 @@ team_totals <- function(){
 **Team Totals Data Set (totalsData)**
 
     ## # A tibble: 104 x 11
+    ## # Groups:   franchiseId [38]
     ##       id franchiseId teamId teamName gamesPlayed homeTies homeWins homeLosses
     ##    <int>       <int>  <int> <chr>          <int>    <int>    <int>      <int>
     ##  1     1          23      1 New Jer~        2937       96      783        507
@@ -184,21 +185,21 @@ One_Franchise <- function(ID){
     J_Data <- tbl_df(JData$data)
     
   # Query Data  
-    Data <- J_Data%>%
-      select("franchiseId", "franchiseName", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
+   Data <- J_Data%>%
+      select("franchiseId", "franchiseName", "homeWinStreak", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
 
   # Return data set 
     return(Data)
 }
 ```
 
-**Data for the New Jersey Franchise**
+**Demonstrate Function: Data for the New Jersey Franchise**
 
-    ## # A tibble: 1 x 8
-    ##   franchiseId franchiseName fewestLosses fewestTies fewestWins mostLosses
-    ##         <int> <chr>                <int>      <int>      <int>      <int>
-    ## 1          23 New Jersey D~           19          3         12         56
-    ## # ... with 2 more variables: mostTies <int>, mostWins <int>
+    ## # A tibble: 1 x 9
+    ##   franchiseId franchiseName homeWinStreak fewestLosses fewestTies fewestWins
+    ##         <int> <chr>                 <int>        <int>      <int>      <int>
+    ## 1          23 New Jersey D~            11           19          3         12
+    ## # ... with 3 more variables: mostLosses <int>, mostTies <int>, mostWins <int>
 
 ### Franchise Specific Goalie Function
 
@@ -226,7 +227,7 @@ goalie <- function(ID){
 }
 ```
 
-**Goalie Data for New Jersey Franchise**
+**Demonstrate Function: Goalie Data for New Jersey Franchise**
 
     ## # A tibble: 27 x 29
     ##       id activePlayer firstName franchiseId franchiseName gameTypeId gamesPlayed
@@ -351,13 +352,224 @@ g + geom_bar(aes(fill = Current)) +
 
 ## Team Totals Data Set (totalsData)
 
-Here, I will compare the number of games won at home versus those won on
-the road.
+Here, I will run two analyses on the totals data set. First, I will
+create a variable that calculates the overall proportion of games won
+for each team (`avgWins`). I will then create a histogram of those
+percentages.
+
+**Code to Create `avgWins` Variable**
 
 ``` r
-g <- ggplot(totalsData, aes(x = homeWins, y = roadWins))
+totals <- totalsData %>% group_by(teamName) %>% summarise(totalGames = sum(gamesPlayed), totalHWins = sum(homeWins), totalRWins = sum(roadWins))
 
-g + geom_point()
+totals <- totals %>% mutate(avgWins = (totalHWins+totalRWins)/totalGames)
+
+totals
+```
+
+    ## # A tibble: 57 x 5
+    ##    teamName                totalGames totalHWins totalRWins avgWins
+    ##    <chr>                        <int>      <int>      <int>   <dbl>
+    ##  1 Anaheim Ducks                 2217        602        460   0.479
+    ##  2 Arizona Coyotes                480        104         86   0.396
+    ##  3 Atlanta Flames                 653        163        107   0.413
+    ##  4 Atlanta Thrashers              906        183        159   0.377
+    ##  5 Boston Bruins                 7221       2056       1473   0.489
+    ##  6 Brooklyn Americans              48         10          6   0.333
+    ##  7 Buffalo Sabres                4145       1118        796   0.462
+    ##  8 Calgary Flames                3309        906        663   0.474
+    ##  9 California Golden Seals        472         84         32   0.246
+    ## 10 Carolina Hurricanes           1849        460        380   0.454
+    ## # ... with 47 more rows
+
+**Code to Create Histogram of `avgWins` Variable**
+
+``` r
+g <- ggplot(totals, aes(x = avgWins))
+
+g + geom_histogram() + 
+  labs(x = "Proportion of Games Won", title = "Distribution of Proportion of Wins") 
+```
+
+![](README_files/figure-gfm/avgWins%20histogram-1.png)<!-- -->
+
+Second, I will make a factor dividing the teams into two groups: *those
+that have played more than 500 games, and those that have not*. Then, I
+will compare the distributions of `avgWins` for those two groups.
+
+**Code to Create 500+ Games Factor**
+
+``` r
+totals <- 
+  totals %>% 
+  mutate(FiveHunPlus = ifelse(totalGames >= 500, "More than 500 Games", "Less than 500 Games"))
+
+totals
+```
+
+    ## # A tibble: 57 x 6
+    ##    teamName            totalGames totalHWins totalRWins avgWins FiveHunPlus     
+    ##    <chr>                    <int>      <int>      <int>   <dbl> <chr>           
+    ##  1 Anaheim Ducks             2217        602        460   0.479 More than 500 G~
+    ##  2 Arizona Coyotes            480        104         86   0.396 Less than 500 G~
+    ##  3 Atlanta Flames             653        163        107   0.413 More than 500 G~
+    ##  4 Atlanta Thrashers          906        183        159   0.377 More than 500 G~
+    ##  5 Boston Bruins             7221       2056       1473   0.489 More than 500 G~
+    ##  6 Brooklyn Americans          48         10          6   0.333 Less than 500 G~
+    ##  7 Buffalo Sabres            4145       1118        796   0.462 More than 500 G~
+    ##  8 Calgary Flames            3309        906        663   0.474 More than 500 G~
+    ##  9 California Golden ~        472         84         32   0.246 Less than 500 G~
+    ## 10 Carolina Hurricanes       1849        460        380   0.454 More than 500 G~
+    ## # ... with 47 more rows
+
+**Code to Create Side-by-Side Boxplots**
+
+``` r
+g <- ggplot(totals, aes(x = FiveHunPlus, y = avgWins, color = FiveHunPlus))
+
+g + geom_boxplot() + 
+  labs(title = "Comparison of the Proportion of Wins", x = "Number of Games Played", y = "Proportion of Games Won") + 
+  scale_color_discrete(name = " ")
 ```
 
 ![](README_files/figure-gfm/wins%20boxplots-1.png)<!-- -->
+
+## Franchise Data Analysis
+
+Below, I will create a data set that includes the franchise data from
+multiple franchises.
+
+**Code to Create Multiple Franchise Data (FranchiseData)**
+
+``` r
+# Create Multiple Data Vectors
+NJ <- One_Franchise(23)
+NY <- One_Franchise(22)
+PHL <- One_Franchise(16)
+PIT <- One_Franchise(17)
+FLO <- One_Franchise(13)
+
+FranchiseData <- rbind(NJ, NY, PHL, PIT, FLO)
+FranchiseData
+```
+
+    ## # A tibble: 5 x 9
+    ##   franchiseId franchiseName homeWinStreak fewestLosses fewestTies fewestWins
+    ##         <int> <chr>                 <int>        <int>      <int>      <int>
+    ## 1          23 New Jersey D~            11           19          3         12
+    ## 2          22 New York Isl~            14           15          4         12
+    ## 3          16 Philadelphia~            20           12          4         17
+    ## 4          17 Pittsburgh P~            13           21          4         16
+    ## 5          13 Cleveland Ba~             5           36          5         13
+    ## # ... with 3 more variables: mostLosses <int>, mostTies <int>, mostWins <int>
+
+**Code to Create Side by Side Bar Graph of Franchise Data, by
+Franchise**
+
+``` r
+g <- ggplot(FranchiseData, aes(x = franchiseName, y = homeWinStreak, fill = franchiseName))
+
+g + geom_col() +
+  labs(title = "Home Win Streak", x = "Franchise", y = "Count") +
+  scale_color_discrete(name = " ")
+```
+
+![](README_files/figure-gfm/Franchise%20Bar%20Graph-1.png)<!-- -->
+
+## Goalie, by Franchise Data Analysis
+
+``` r
+NJ <- goalie(23)
+NY <- goalie(22)
+PHL <- goalie(16)
+PIT <- goalie(17)
+FLO <-goalie(13)
+
+GoalieData <- rbind(NJ, NY, PHL, PIT, FLO)
+GoalieData 
+```
+
+    ## # A tibble: 133 x 29
+    ##       id activePlayer firstName franchiseId franchiseName gameTypeId gamesPlayed
+    ##    <int> <lgl>        <chr>           <int> <chr>              <int>       <int>
+    ##  1   266 FALSE        Martin             23 New Jersey D~          2        1259
+    ##  2   368 FALSE        Sean               23 New Jersey D~          2         162
+    ##  3   409 FALSE        Doug               23 New Jersey D~          2          84
+    ##  4   493 FALSE        Ron                23 New Jersey D~          2          81
+    ##  5   506 FALSE        Peter              23 New Jersey D~          2          36
+    ##  6   510 FALSE        Bill               23 New Jersey D~          2          22
+    ##  7   514 FALSE        Roland             23 New Jersey D~          2           1
+    ##  8   518 FALSE        Lindsay            23 New Jersey D~          2           9
+    ##  9   535 FALSE        Phil               23 New Jersey D~          2          34
+    ## 10   664 FALSE        Michel             23 New Jersey D~          2          24
+    ## # ... with 123 more rows, and 22 more variables: lastName <chr>, losses <int>,
+    ## #   mostGoalsAgainstDates <chr>, mostGoalsAgainstOneGame <int>,
+    ## #   mostSavesDates <chr>, mostSavesOneGame <int>, mostShotsAgainstDates <chr>,
+    ## #   mostShotsAgainstOneGame <int>, mostShutoutsOneSeason <int>,
+    ## #   mostShutoutsSeasonIds <chr>, mostWinsOneSeason <int>,
+    ## #   mostWinsSeasonIds <chr>, overtimeLosses <int>, playerId <int>,
+    ## #   positionCode <chr>, rookieGamesPlayed <int>, rookieShutouts <int>,
+    ## #   rookieWins <int>, seasons <int>, shutouts <int>, ties <int>, wins <int>
+
+**Code to Create Contingency Table of Active vs. Inactive Goalies for
+the 5 Franchises**
+
+``` r
+# Make activePlayer variable a factor with two labels "Active" and "Inactive"  
+
+GoalieData[2] <- factor(as.character(GoalieData$activePlayer), levels = c("FALSE", "TRUE"), labels = c("Inactive", "Active"))  
+
+kable(table(GoalieData$activePlayer, GoalieData$franchiseName))
+```
+
+|          | Cleveland Barons | New Jersey Devils | New York Islanders | Philadelphia Flyers | Pittsburgh Penguins |
+| -------- | ---------------: | ----------------: | -----------------: | ------------------: | ------------------: |
+| Inactive |                5 |                24 |                 26 |                  30 |                  32 |
+| Active   |                0 |                 3 |                  4 |                   4 |                   5 |
+
+**Code to Create Summaries for a few variables for Inactive and Active
+Goalies**
+
+``` r
+# Create Inactive Summaries
+InActiveData <- GoalieData %>% 
+  filter(activePlayer == "Inactive")%>%
+  select("gamesPlayed", "losses", "mostSavesOneGame", "wins")
+
+mat <- apply(InActiveData, 2, summary, digits = 3)
+
+kable(mat, caption = "Summaries for Inactive Players")
+```
+
+|         | gamesPlayed | losses | mostSavesOneGame |  wins |
+| ------- | ----------: | -----: | ---------------: | ----: |
+| Min.    |         1.0 |      0 |              5.0 |   0.0 |
+| 1st Qu. |        10.0 |      4 |             36.0 |   3.0 |
+| Median  |        36.0 |     18 |             42.0 |  13.0 |
+| Mean    |        88.7 |     34 |             40.5 |  36.8 |
+| 3rd Qu. |       103.0 |     43 |             47.0 |  42.0 |
+| Max.    |      1260.0 |    394 |             58.0 | 688.0 |
+
+Summaries for Inactive Players
+
+``` r
+# Create Active Summaries  
+ActiveData <- GoalieData %>% 
+  filter(activePlayer == "Active")%>%
+  select("gamesPlayed", "losses", "mostSavesOneGame", "wins")
+
+stuff <- apply(ActiveData, 2, summary, digits = 3)
+
+kable(stuff, caption = "Summaries for Active Players")
+```
+
+|         | gamesPlayed | losses | mostSavesOneGame |  wins |
+| ------- | ----------: | -----: | ---------------: | ----: |
+| Min.    |         1.0 |    0.0 |              7.0 |   0.0 |
+| 1st Qu. |        16.8 |    6.0 |             36.0 |   5.5 |
+| Median  |        48.0 |   14.5 |             44.5 |  23.0 |
+| Mean    |       122.0 |   40.4 |             40.9 |  60.4 |
+| 3rd Qu. |       181.0 |   54.8 |             48.5 |  91.2 |
+| Max.    |       691.0 |  216.0 |             52.0 | 375.0 |
+
+Summaries for Active Players
