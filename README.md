@@ -16,6 +16,7 @@ JSON, which stands for **JavaScript Object Notation** is a method for
 writing data that is simple to read, and write, and for computers to
 parse and generate. JSON data is easy to code as it is text that is
 separated into *objects* and within each object, if needed, *arrays*.
+Objects are inside braces (`{}`) and arrays are inside brackets (`[]`).
 Each object typically contains one or more *name-value pairs*; a
 name-value pair contains a key and its value, separated by a colon. An
 example of a name-value pair would be `"Name"` (key)`:"Sarah
@@ -23,8 +24,7 @@ McLaughlin"` (value). Keys within an object are unique. Keys with the
 same name need to be put into another object (possibly within the same
 object) or into an array. An *array* is a grouping of elements,
 separated by a comma. The elements in an array can be anything,
-including objects. The value of a key could be an array. Objects are
-inside braces (`{}`) and arrays are inside brackets (`[]`).
+including objects. The value of a key could be an array.
 
 For example, if you wanted to create a data set that included the name
 and birthday of everyone in your family, you could do so by creating one
@@ -37,32 +37,46 @@ your family. Here is what it could look like: { “data” :
 ### Where and why is JSON Data used?
 
 JSON Data is not dependent on any specific programming language and
-thus, can be read by many different programming languages.JSON Data is
-universal and is typically used for transmitting data from a server and
-a website. For example, in this vignette, I will download JSON Data from
-the NHL API (“Application Programming Interface”), which I will then
-read using `R`.
+thus, can be read by many different programming languages. It is also
+not difficult for humans to write JSON Data. JSON Data is universal and
+is typically used for transmitting data from a server and a website. For
+example, in this vignette, I will download JSON Data from the NHL API
+(“Application Programming Interface”), which I will then read in using
+`R`.
 
-*References for paragraph above:
+*References for paragraphs above:
 [JSON.org](https://www.json.org/json-en.html),
 [Wikipedia.com](https://en.wikipedia.org/wiki/JSON#Data_types_and_syntax),
 [stackoverflow](https://stackoverflow.com/questions/383692/what-is-json-and-why-would-i-use-it#:~:text=The%20JSON%20format%20is%20often,as%20an%20alternative%20to%20XML.&text=JSON%20is%20JavaScript%20Object%20Notation.),
 and [NHL Franchise JSON](https://records.nhl.com/site/api/franchise).*
 
-## How to Read JSON Data?
+## How to Read JSON Data
 
-There are 3 packages that allow `R` to read JSON Data. 1. `jsonlite`, 2.
-`httr` and 3.
+There are 3 packages that allow `R` to read JSON Data: 1. `rjson`, 2.
+`rjsonio`, and 3.`jsonlite`. According to CRAN, `rjson` only converts R
+objects into JSON objects and JSON objects into R objects. It was
+published in 2018. `rjsonio` was made as a faster version of `rjson`
+that can also handle larger objects. It was published this year with a
+note that `rjson` has been updated to work just as fast, if not faster.
+The last package is the one that I used for this project: `jsonlite`.
+According to CRAN, `jsonlite` is fast, robust, and *“particularly
+powerful for … interacting with a web API”.* I picked `jsonlite` for
+this reason and because it was familiar to me, having learned and used
+`jsonlite` in past homework assignments.
 
-# NHL API
-
+*References for paragraph above: [RJSON via
+CRAN](https://cran.r-project.org/package=rjson), [RJSONIO via
+CRAN](https://cran.r-project.org/package=rjsonio), and [JSONLITE via
+CRAN](https://cran.r-project.org/package=jsonlite)*  
+\# NHL API  
 Below is the code that will be used to create functions to read the JSON
-data.
+data. The function are also used to either create the data that will be
+used later or to show the function works.
+
+### Base URL Code (name: `baseURL`)
 
 Here is the code to create the Base URL that will begin each of our
 functions, used to access the NHL API.
-
-### Base URL Code (baseURL)
 
 ``` r
 baseURL <- "https://records.nhl.com/site/api"
@@ -95,15 +109,19 @@ franchise <- function( ){
 
   # Give output 
     return(Data)
+
+  # Close function  
 }
 ```
 
-**Franchise Data Set (franchiseData)**
+**Franchise Data Set (name: `franchiseData`)**  
+Here, I used the `franchise` funtion to create a data set.
 
 ``` r
 franchiseData <- franchise( )
-franchiseData
 ```
+
+*Franchise Data*
 
     ## # A tibble: 38 x 4
     ##       id firstSeasonId lastSeasonId teamCommonName
@@ -121,6 +139,9 @@ franchiseData
     ## # ... with 28 more rows
 
 ### Franchise Team Totals Function
+
+The function (`team_totals()`) below accesses the Franchise Team Totals
+Data.
 
 ``` r
 team_totals <- function(){
@@ -145,10 +166,19 @@ team_totals <- function(){
 
   # Return data set 
     return(Data)
+    
+  # Close function
     }
 ```
 
-**Team Totals Data Set (totalsData)**
+**Team Totals Data Set (name: `totalsData`)**  
+Here, I used the `team_totals` function to create a data set.
+
+``` r
+totalsData <- team_totals()
+```
+
+*Team Totals Data*
 
     ## # A tibble: 104 x 11
     ## # Groups:   franchiseId [38]
@@ -168,6 +198,9 @@ team_totals <- function(){
     ## #   roadLosses <int>
 
 ### Franchise Specific Data Function
+
+The function (`One_Franchise()`) below accesses the Franchise Specific
+Data.
 
 ``` r
 One_Franchise <- function(ID){
@@ -190,10 +223,20 @@ One_Franchise <- function(ID){
 
   # Return data set 
     return(Data)
+   
+  # Close function  
 }
 ```
 
-**Demonstrate Function: Data for the New Jersey Franchise**
+**Demonstrate Function: Data for the New Jersey Franchise**  
+Here, I will demonstrate that the `One_Franchise` function works. It
+will be used again later for numerical analysis.
+
+``` r
+OneFranch <- One_Franchise(23)
+```
+
+*New Jersey Franchise Data*
 
     ## # A tibble: 1 x 9
     ##   franchiseId franchiseName homeWinStreak fewestLosses fewestTies fewestWins
@@ -202,6 +245,9 @@ One_Franchise <- function(ID){
     ## # ... with 3 more variables: mostLosses <int>, mostTies <int>, mostWins <int>
 
 ### Franchise Specific Goalie Function
+
+The function (`goalie()`) below accesses the Franchise Specific Goalie
+Data.
 
 ``` r
 goalie <- function(ID){
@@ -219,15 +265,25 @@ goalie <- function(ID){
     J_Data <- tbl_df(JData$data)
     
   # Query Data  
-   Data <- J_Data%>%
+    Data <- J_Data%>%
       select("activePlayer", "firstName", "lastName", "franchiseName", "gamesPlayed", "mostGoalsAgainstOneGame", "wins", "losses", "mostSavesOneGame")
 
   # Return data set 
     return(Data)
+    
+  # Close function  
 }
 ```
 
-**Demonstrate Function: Goalie Data for New Jersey Franchise**
+**Demonstrate Function: Goalie Data for New Jersey Franchise**  
+Here, I will demonstrate that the `goalie` function works. It will be
+used again later for numerical analysis.
+
+``` r
+goalieData <- goalie(23)
+```
+
+*New Jersey Franchise Goalie Data*
 
     ## # A tibble: 27 x 9
     ##    activePlayer firstName lastName franchiseName gamesPlayed mostGoalsAgains~
@@ -246,6 +302,9 @@ goalie <- function(ID){
     ## #   mostSavesOneGame <int>
 
 ### Franchise Specific Skater Function
+
+The function (`skater`) below accesses the Franchise Specific Skater
+Data.
 
 ``` r
 skater <- function(ID){
@@ -268,10 +327,20 @@ skater <- function(ID){
 
   # Return data set 
     return(Data)
+    
+  # Close function  
 }
 ```
 
-**Franchise Specific Skater Data**
+**Demonstrate Function: Skater Data for New Jersey Franchise**  
+Here, I will demonstrate that the `skater` function works. It will be
+used again later for numerical analysis.
+
+``` r
+SData <- skater(23)
+```
+
+*New Jersey Franchise Skater Data*
 
     ## # A tibble: 1 x 8
     ##   franchiseId franchiseName fewestGoals mostGoals fewestLosses mostLosses
@@ -281,13 +350,14 @@ skater <- function(ID){
 
 # Exploratory Analysis of Data Sets
 
-## Franchise Data (franchiseData)
+## Franchise Data
 
-Here, I will compare the number of hockey teams that are currently
-playing and those that are not. I will do so by creating another
-variable (called `Current`) using the `mutate` and `ifelse` functions.
-Once I have created that variable, I will compare the factors in a bar
-graph.
+Here, I will compare the number current teams to former teams in the
+`franchiseData` data set. I will do so by creating another variable
+(called `Current`) using the `mutate` and `ifelse` functions. The
+variable `Current` will label each team as currently playing or not
+currently playing. Once I have created that variable, I will compare the
+factors in a bar graph using the `ggplot` package.
 
 ### Code to Create `Current`
 
@@ -326,7 +396,16 @@ g + geom_bar(aes(fill = Current)) +
 
 ![](README_files/figure-gfm/current%20bar%20graph-1.png)<!-- -->
 
-## Team Totals Data Set (totalsData)
+### Analysis
+
+According to the graph, the information in the `franchiseData` data set
+is mostly on teams that are currently playing in the NHL. There are
+fewer than 10 teams that are not playing in the data set. This gives a
+“Big Picture” of the data that was queried. This graph shows that a
+majority of the data (about 75%) on the NHL API is on teams that are
+still playing in the NHL.
+
+## Team Totals Data Set
 
 Here, I will run two analyses on the totals data set. First, I will
 create a variable that calculates the overall proportion of games won
@@ -339,9 +418,9 @@ percentages.
 totals <- totalsData %>% group_by(teamName) %>% summarise(totalGames = sum(gamesPlayed), totalHWins = sum(homeWins), totalRWins = sum(roadWins))
 
 totals <- totals %>% mutate(avgWins = (totalHWins+totalRWins)/totalGames)
-
-totals
 ```
+
+**Print Resulting Data Set**
 
     ## # A tibble: 57 x 5
     ##    teamName                totalGames totalHWins totalRWins avgWins
@@ -371,7 +450,8 @@ g + geom_histogram() +
 
 Second, I will make a factor dividing the teams into two groups: *those
 that have played more than 500 games, and those that have not*. Then, I
-will compare the distributions of `avgWins` for those two groups.
+will compare the distributions of `avgWins` for those two groups using
+side by side box-plots.
 
 **Code to Create 500+ Games Factor**
 
@@ -379,9 +459,9 @@ will compare the distributions of `avgWins` for those two groups.
 totals <- 
   totals %>% 
   mutate(FiveHunPlus = ifelse(totalGames >= 500, "More than 500 Games", "Less than 500 Games"))
-
-totals
 ```
+
+**Print Resulting Data Set**
 
     ## # A tibble: 57 x 6
     ##    teamName            totalGames totalHWins totalRWins avgWins FiveHunPlus     
@@ -401,7 +481,7 @@ totals
 **Code to Create Side-by-Side Boxplots**
 
 ``` r
-g <- ggplot(totals, aes(x = FiveHunPlus, y = avgWins, color = FiveHunPlus))
+g <- ggplot(totals, aes(x = FiveHunPlus, y = avgWins, fill = FiveHunPlus))
 
 g + geom_boxplot() + 
   labs(title = "Comparison of the Proportion of Wins", x = "Number of Games Played", y = "Proportion of Games Won") + 
@@ -409,6 +489,8 @@ g + geom_boxplot() +
 ```
 
 ![](README_files/figure-gfm/wins%20boxplots-1.png)<!-- -->
+
+### Analysis
 
 ## Franchise Data Analysis
 
