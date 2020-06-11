@@ -219,37 +219,31 @@ goalie <- function(ID){
     J_Data <- tbl_df(JData$data)
     
   # Query Data  
-   # Data <- J_Data%>%
-      #select("franchiseId", "franchiseName", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
+   Data <- J_Data%>%
+      select("activePlayer", "firstName", "lastName", "franchiseName", "gamesPlayed", "mostGoalsAgainstOneGame", "wins", "losses", "mostSavesOneGame")
 
   # Return data set 
-    return(J_Data)
+    return(Data)
 }
 ```
 
 **Demonstrate Function: Goalie Data for New Jersey Franchise**
 
-    ## # A tibble: 27 x 29
-    ##       id activePlayer firstName franchiseId franchiseName gameTypeId gamesPlayed
-    ##    <int> <lgl>        <chr>           <int> <chr>              <int>       <int>
-    ##  1   266 FALSE        Martin             23 New Jersey D~          2        1259
-    ##  2   368 FALSE        Sean               23 New Jersey D~          2         162
-    ##  3   409 FALSE        Doug               23 New Jersey D~          2          84
-    ##  4   493 FALSE        Ron                23 New Jersey D~          2          81
-    ##  5   506 FALSE        Peter              23 New Jersey D~          2          36
-    ##  6   510 FALSE        Bill               23 New Jersey D~          2          22
-    ##  7   514 FALSE        Roland             23 New Jersey D~          2           1
-    ##  8   518 FALSE        Lindsay            23 New Jersey D~          2           9
-    ##  9   535 FALSE        Phil               23 New Jersey D~          2          34
-    ## 10   664 FALSE        Michel             23 New Jersey D~          2          24
-    ## # ... with 17 more rows, and 22 more variables: lastName <chr>, losses <int>,
-    ## #   mostGoalsAgainstDates <chr>, mostGoalsAgainstOneGame <int>,
-    ## #   mostSavesDates <chr>, mostSavesOneGame <int>, mostShotsAgainstDates <chr>,
-    ## #   mostShotsAgainstOneGame <int>, mostShutoutsOneSeason <int>,
-    ## #   mostShutoutsSeasonIds <chr>, mostWinsOneSeason <int>,
-    ## #   mostWinsSeasonIds <chr>, overtimeLosses <int>, playerId <int>,
-    ## #   positionCode <chr>, rookieGamesPlayed <int>, rookieShutouts <int>,
-    ## #   rookieWins <int>, seasons <int>, shutouts <int>, ties <int>, wins <int>
+    ## # A tibble: 27 x 9
+    ##    activePlayer firstName lastName franchiseName gamesPlayed mostGoalsAgains~
+    ##    <lgl>        <chr>     <chr>    <chr>               <int>            <int>
+    ##  1 FALSE        Martin    Brodeur  New Jersey D~        1259                6
+    ##  2 FALSE        Sean      Burke    New Jersey D~         162                9
+    ##  3 FALSE        Doug      Favell   New Jersey D~          84                9
+    ##  4 FALSE        Ron       Low      New Jersey D~          81                8
+    ##  5 FALSE        Peter     McDuffe  New Jersey D~          36               10
+    ##  6 FALSE        Bill      McKenzie New Jersey D~          22               10
+    ##  7 FALSE        Roland    Melanson New Jersey D~           1                2
+    ##  8 FALSE        Lindsay   Middleb~ New Jersey D~           9                7
+    ##  9 FALSE        Phil      Myre     New Jersey D~          34                8
+    ## 10 FALSE        Michel    Plasse   New Jersey D~          24                9
+    ## # ... with 17 more rows, and 3 more variables: wins <int>, losses <int>,
+    ## #   mostSavesOneGame <int>
 
 ### Franchise Specific Skater Function
 
@@ -269,39 +263,21 @@ skater <- function(ID){
     J_Data <- tbl_df(JData$data)
     
   # Query Data  
-    #Data <- J_Data%>%
-     #select("franchiseId", "franchiseName", "fewestLosses", "fewestTies","fewestWins", "mostLosses", "mostTies", "mostWins")
+    Data <- J_Data%>%
+     select("franchiseId", "franchiseName", "fewestGoals", "mostGoals", "fewestLosses", "mostLosses", "mostWins", "pointStreak")
 
   # Return data set 
-    return(J_Data)
+    return(Data)
 }
 ```
 
 **Franchise Specific Skater Data**
 
-    ## # A tibble: 1 x 57
-    ##      id fewestGoals fewestGoalsAgai~ fewestGoalsAgai~ fewestGoalsSeas~
-    ##   <int>       <int>            <int> <chr>            <chr>           
-    ## 1     1         174              164 2003-04 (82)     2010-11 (82)    
-    ## # ... with 52 more variables: fewestLosses <int>, fewestLossesSeasons <chr>,
-    ## #   fewestPoints <int>, fewestPointsSeasons <chr>, fewestTies <int>,
-    ## #   fewestTiesSeasons <chr>, fewestWins <int>, fewestWinsSeasons <chr>,
-    ## #   franchiseId <int>, franchiseName <chr>, homeLossStreak <int>,
-    ## #   homeLossStreakDates <chr>, homePointStreak <int>,
-    ## #   homePointStreakDates <chr>, homeWinStreak <int>, homeWinStreakDates <chr>,
-    ## #   homeWinlessStreak <int>, homeWinlessStreakDates <chr>, lossStreak <int>,
-    ## #   lossStreakDates <chr>, mostGameGoals <int>, mostGameGoalsDates <chr>,
-    ## #   mostGoals <int>, mostGoalsAgainst <int>, mostGoalsAgainstSeasons <chr>,
-    ## #   mostGoalsSeasons <chr>, mostLosses <int>, mostLossesSeasons <chr>,
-    ## #   mostPenaltyMinutes <int>, mostPenaltyMinutesSeasons <chr>,
-    ## #   mostPoints <int>, mostPointsSeasons <chr>, mostShutouts <int>,
-    ## #   mostShutoutsSeasons <chr>, mostTies <int>, mostTiesSeasons <chr>,
-    ## #   mostWins <int>, mostWinsSeasons <chr>, pointStreak <int>,
-    ## #   pointStreakDates <chr>, roadLossStreak <int>, roadLossStreakDates <chr>,
-    ## #   roadPointStreak <int>, roadPointStreakDates <chr>, roadWinStreak <int>,
-    ## #   roadWinStreakDates <chr>, roadWinlessStreak <int>,
-    ## #   roadWinlessStreakDates <chr>, winStreak <int>, winStreakDates <chr>,
-    ## #   winlessStreak <int>, winlessStreakDates <chr>
+    ## # A tibble: 1 x 8
+    ##   franchiseId franchiseName fewestGoals mostGoals fewestLosses mostLosses
+    ##         <int> <chr>               <int>     <int>        <int>      <int>
+    ## 1          23 New Jersey D~         174       308           19         56
+    ## # ... with 2 more variables: mostWins <int>, pointStreak <int>
 
 # Exploratory Analysis of Data Sets
 
@@ -471,7 +447,7 @@ g <- ggplot(FranchiseData, aes(x = franchiseName, y = homeWinStreak, fill = fran
 
 g + geom_col() +
   labs(title = "Home Win Streak", x = "Franchise", y = "Count") +
-  scale_color_discrete(name = " ")
+  scale_color_discrete(name = )
 ```
 
 ![](README_files/figure-gfm/Franchise%20Bar%20Graph-1.png)<!-- -->
@@ -489,27 +465,21 @@ GoalieData <- rbind(NJ, NY, PHL, PIT, FLO)
 GoalieData 
 ```
 
-    ## # A tibble: 133 x 29
-    ##       id activePlayer firstName franchiseId franchiseName gameTypeId gamesPlayed
-    ##    <int> <lgl>        <chr>           <int> <chr>              <int>       <int>
-    ##  1   266 FALSE        Martin             23 New Jersey D~          2        1259
-    ##  2   368 FALSE        Sean               23 New Jersey D~          2         162
-    ##  3   409 FALSE        Doug               23 New Jersey D~          2          84
-    ##  4   493 FALSE        Ron                23 New Jersey D~          2          81
-    ##  5   506 FALSE        Peter              23 New Jersey D~          2          36
-    ##  6   510 FALSE        Bill               23 New Jersey D~          2          22
-    ##  7   514 FALSE        Roland             23 New Jersey D~          2           1
-    ##  8   518 FALSE        Lindsay            23 New Jersey D~          2           9
-    ##  9   535 FALSE        Phil               23 New Jersey D~          2          34
-    ## 10   664 FALSE        Michel             23 New Jersey D~          2          24
-    ## # ... with 123 more rows, and 22 more variables: lastName <chr>, losses <int>,
-    ## #   mostGoalsAgainstDates <chr>, mostGoalsAgainstOneGame <int>,
-    ## #   mostSavesDates <chr>, mostSavesOneGame <int>, mostShotsAgainstDates <chr>,
-    ## #   mostShotsAgainstOneGame <int>, mostShutoutsOneSeason <int>,
-    ## #   mostShutoutsSeasonIds <chr>, mostWinsOneSeason <int>,
-    ## #   mostWinsSeasonIds <chr>, overtimeLosses <int>, playerId <int>,
-    ## #   positionCode <chr>, rookieGamesPlayed <int>, rookieShutouts <int>,
-    ## #   rookieWins <int>, seasons <int>, shutouts <int>, ties <int>, wins <int>
+    ## # A tibble: 133 x 9
+    ##    activePlayer firstName lastName franchiseName gamesPlayed mostGoalsAgains~
+    ##    <lgl>        <chr>     <chr>    <chr>               <int>            <int>
+    ##  1 FALSE        Martin    Brodeur  New Jersey D~        1259                6
+    ##  2 FALSE        Sean      Burke    New Jersey D~         162                9
+    ##  3 FALSE        Doug      Favell   New Jersey D~          84                9
+    ##  4 FALSE        Ron       Low      New Jersey D~          81                8
+    ##  5 FALSE        Peter     McDuffe  New Jersey D~          36               10
+    ##  6 FALSE        Bill      McKenzie New Jersey D~          22               10
+    ##  7 FALSE        Roland    Melanson New Jersey D~           1                2
+    ##  8 FALSE        Lindsay   Middleb~ New Jersey D~           9                7
+    ##  9 FALSE        Phil      Myre     New Jersey D~          34                8
+    ## 10 FALSE        Michel    Plasse   New Jersey D~          24                9
+    ## # ... with 123 more rows, and 3 more variables: wins <int>, losses <int>,
+    ## #   mostSavesOneGame <int>
 
 **Code to Create Contingency Table of Active vs. Inactive Goalies for
 the 5 Franchises**
@@ -517,7 +487,7 @@ the 5 Franchises**
 ``` r
 # Make activePlayer variable a factor with two labels "Active" and "Inactive"  
 
-GoalieData[2] <- factor(as.character(GoalieData$activePlayer), levels = c("FALSE", "TRUE"), labels = c("Inactive", "Active"))  
+GoalieData[1] <- factor(as.character(GoalieData$activePlayer), levels = c("FALSE", "TRUE"), labels = c("Inactive", "Active"))  
 
 kable(table(GoalieData$activePlayer, GoalieData$franchiseName))
 ```
@@ -527,6 +497,16 @@ kable(table(GoalieData$activePlayer, GoalieData$franchiseName))
 | Inactive |                5 |                24 |                 26 |                  30 |                  32 |
 | Active   |                0 |                 3 |                  4 |                   4 |                   5 |
 
+**Code to Create Bar Graphs for Table Above**
+
+``` r
+g <- ggplot(GoalieData, aes(x = franchiseName))
+
+g + geom_bar(aes(fill = activePlayer), position = "dodge") 
+```
+
+![](README_files/figure-gfm/goalie%20bar%20graph-1.png)<!-- -->
+
 **Code to Create Summaries for a few variables for Inactive and Active
 Goalies**
 
@@ -534,21 +514,21 @@ Goalies**
 # Create Inactive Summaries
 InActiveData <- GoalieData %>% 
   filter(activePlayer == "Inactive")%>%
-  select("gamesPlayed", "losses", "mostSavesOneGame", "wins")
+  select("gamesPlayed", "wins", "losses", "mostSavesOneGame")
 
 mat <- apply(InActiveData, 2, summary, digits = 3)
 
 kable(mat, caption = "Summaries for Inactive Players")
 ```
 
-|         | gamesPlayed | losses | mostSavesOneGame |  wins |
-| ------- | ----------: | -----: | ---------------: | ----: |
-| Min.    |         1.0 |      0 |              5.0 |   0.0 |
-| 1st Qu. |        10.0 |      4 |             36.0 |   3.0 |
-| Median  |        36.0 |     18 |             42.0 |  13.0 |
-| Mean    |        88.7 |     34 |             40.5 |  36.8 |
-| 3rd Qu. |       103.0 |     43 |             47.0 |  42.0 |
-| Max.    |      1260.0 |    394 |             58.0 | 688.0 |
+|         | gamesPlayed |  wins | losses | mostSavesOneGame |
+| ------- | ----------: | ----: | -----: | ---------------: |
+| Min.    |         1.0 |   0.0 |      0 |              5.0 |
+| 1st Qu. |        10.0 |   3.0 |      4 |             36.0 |
+| Median  |        36.0 |  13.0 |     18 |             42.0 |
+| Mean    |        88.7 |  36.8 |     34 |             40.5 |
+| 3rd Qu. |       103.0 |  42.0 |     43 |             47.0 |
+| Max.    |      1260.0 | 688.0 |    394 |             58.0 |
 
 Summaries for Inactive Players
 
@@ -573,3 +553,48 @@ kable(stuff, caption = "Summaries for Active Players")
 | Max.    |       691.0 |  216.0 |             52.0 | 375.0 |
 
 Summaries for Active Players
+
+**Code to Create Scatterplot with `gamesPlayed` vs. `mostSavesOneGame`
+by Franchise**
+
+``` r
+g <- ggplot(GoalieData, aes(x = gamesPlayed, y = `mostSavesOneGame`, color = franchiseName))
+
+g + geom_point() + 
+  labs(title = "Most Saves vs. Games Played", x = "Number of Games Played", y = "Most Saves in One Game")+
+  scale_fill_discrete(name = "Franchise Name")
+```
+
+![](README_files/figure-gfm/scatter%20goalie-1.png)<!-- -->
+
+## Skater, by Franchise Data Analysis
+
+``` r
+# Creating SkaterData data set 
+NJ <- skater(23)
+NY <- skater(22)
+PHL <- skater(16)
+PIT <- skater(17)
+FLO <-skater(13)
+
+SkaterData <- rbind(NJ, NY, PHL, PIT, FLO)
+SkaterData
+```
+
+    ## # A tibble: 5 x 8
+    ##   franchiseId franchiseName fewestGoals mostGoals fewestLosses mostLosses
+    ##         <int> <chr>               <int>     <int>        <int>      <int>
+    ## 1          23 New Jersey D~         174       308           19         56
+    ## 2          22 New York Isl~         170       385           15         60
+    ## 3          16 Philadelphia~         173       350           12         48
+    ## 4          17 Pittsburgh P~         182       367           21         58
+    ## 5          13 Cleveland Ba~         153       250           36         55
+    ## # ... with 2 more variables: mostWins <int>, pointStreak <int>
+
+``` r
+g <- ggplot(SkaterData, aes(x = mostLosses, y = mostWins, color = franchiseName))
+
+g + geom_point()
+```
+
+![](README_files/figure-gfm/skater%20graphic-1.png)<!-- --> \`\`\`
