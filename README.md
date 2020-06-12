@@ -3,14 +3,30 @@ Project 1
 Sarah McLaughlin
 6/5/2020
 
-# VIGNETTE
+  - [Introduction to JSON Data](#introduction-to-json-data)
+      - [What is JSON Data?](#what-is-json-data)
+      - [Where and why is JSON Data
+        used?](#where-and-why-is-json-data-used)
+      - [How to Read JSON Data](#how-to-read-json-data)
+  - [NHL API](#nhl-api)
+      - [Functions to Access Data from NHL
+        API](#functions-to-access-data-from-nhl-api)
+  - [Exploratory Analysis of Data
+    Sets](#exploratory-analysis-of-data-sets)
+      - [Franchise Data](#franchise-data-1)
+      - [Team Totals Data Set](#team-totals-data-set)
+      - [Specific Franchise Data](#specific-franchise-data)
+      - [Goalie, by Franchise Data](#goalie-by-franchise-data)
+      - [Skater, by Franchise Data
+        Analysis](#skater-by-franchise-data-analysis)
 
+**VIGNETTE**  
 Reading and summarizing a JSON data set using data from the National
 Hockey League (NHI) API.
 
-## Introduction to JSON Data
+# Introduction to JSON Data
 
-### What is JSON Data?
+## What is JSON Data?
 
 JSON, which stands for **JavaScript Object Notation** is a method for
 writing data that is simple to read, and write, and for computers to
@@ -34,7 +50,7 @@ your family. Here is what it could look like: { “data” :
 \[{“Name”:“Dad”, “Birthday”:“April 2”}, {“Name”:“Mom”,
 “Birthday”:“March 7”}\]}.
 
-### Where and why is JSON Data used?
+## Where and why is JSON Data used?
 
 JSON Data is not dependent on any specific programming language and
 thus, can be read by many different programming languages. It is also
@@ -67,8 +83,10 @@ this reason and because it was familiar to me, having learned and used
 *References for paragraph above: [RJSON via
 CRAN](https://cran.r-project.org/package=rjson), [RJSONIO via
 CRAN](https://cran.r-project.org/package=rjsonio), and [JSONLITE via
-CRAN](https://cran.r-project.org/package=jsonlite)*  
-\# NHL API  
+CRAN](https://cran.r-project.org/package=jsonlite)*
+
+# NHL API
+
 Below is the code that will be used to create functions to read the JSON
 data. The function are also used to either create the data that will be
 used later or to show the function works.
@@ -412,7 +430,12 @@ create a variable that calculates the overall proportion of games won
 for each team (`avgWins`). I will then create a histogram of those
 percentages.
 
-**Code to Create `avgWins` Variable**
+*Note: I realize that `avgWins` is not an appropriate label for this
+variable as it is actually the proportion of wins, not the average. I
+have already coded `avgWins` many times and thus, adjusted the labels on
+my graphics instead.*
+
+### Code to Create `avgWins` Variable
 
 ``` r
 totals <- totalsData %>% group_by(teamName) %>% summarise(totalGames = sum(gamesPlayed), totalHWins = sum(homeWins), totalRWins = sum(roadWins))
@@ -437,7 +460,7 @@ totals <- totals %>% mutate(avgWins = (totalHWins+totalRWins)/totalGames)
     ## 10 Carolina Hurricanes           1849        460        380   0.454
     ## # ... with 47 more rows
 
-**Code to Create Histogram of `avgWins` Variable**
+### Code to Create Histogram of `avgWins` Variable
 
 ``` r
 g <- ggplot(totals, aes(x = avgWins))
@@ -453,7 +476,7 @@ that have played more than 500 games, and those that have not*. Then, I
 will compare the distributions of `avgWins` for those two groups using
 side by side box-plots.
 
-**Code to Create 500+ Games Factor**
+### Code to Create 500+ Games Factor
 
 ``` r
 totals <- 
@@ -478,7 +501,7 @@ totals <-
     ## 10 Carolina Hurricanes       1849        460        380   0.454 More than 500 G~
     ## # ... with 47 more rows
 
-**Code to Create Side-by-Side Boxplots**
+### Code to Create Side-by-Side Boxplots
 
 ``` r
 g <- ggplot(totals, aes(x = FiveHunPlus, y = avgWins, fill = FiveHunPlus))
@@ -492,12 +515,22 @@ g + geom_boxplot() +
 
 ### Analysis
 
-## Franchise Data Analysis
+When the data is analyzed as a whole, the distribution of the proportion
+of wins is left skewed. A large amount of the teams had proportions
+between 0.4 and 0.5. However, when the data is divided into two groups
+(“Teams who have played less than 500 games” and “Teams who have
+played more than 500 games”), you can see that the teams who have played
+more than 500 games have most of the proportions between 0.4 and 0.5.
+For the teams that have played less than 500 games, over 75% of the
+teams have a proportion of wins less than 0.4.
+
+## Specific Franchise Data
 
 Below, I will create a data set that includes the franchise data from
-multiple franchises.
+multiple franchises. I used the `One_Franchise` function I created
+earlier in this vignette.
 
-**Code to Create Multiple Franchise Data (FranchiseData)**
+**Code to Create Multiple Franchise Data (name: `FranchiseData`)**
 
 ``` r
 # Create Multiple Data Vectors
@@ -508,8 +541,9 @@ PIT <- One_Franchise(17)
 FLO <- One_Franchise(13)
 
 FranchiseData <- rbind(NJ, NY, PHL, PIT, FLO)
-FranchiseData
 ```
+
+**Print Resulting Data Set**
 
     ## # A tibble: 5 x 9
     ##   franchiseId franchiseName homeWinStreak fewestLosses fewestTies fewestWins
@@ -528,13 +562,28 @@ Franchise**
 g <- ggplot(FranchiseData, aes(x = franchiseName, y = homeWinStreak, fill = franchiseName))
 
 g + geom_col() +
-  labs(title = "Home Win Streak", x = "Franchise", y = "Count") +
-  scale_color_discrete(name = )
+  labs(title = "Home Win Streak", x = " ", y = "Count") +
+  scale_fill_discrete(name = " " )
 ```
 
 ![](README_files/figure-gfm/Franchise%20Bar%20Graph-1.png)<!-- -->
 
-## Goalie, by Franchise Data Analysis
+### Analysis
+
+In this data set, we are looking at specific variables for five
+different franchises. I picked the Longest Home Winning Streak variable
+and made a simple bar graph to show that the Philadelphia Flyers have
+had the longest win streak by about 6 games. The Cleveland Barons had
+the shortest win streak; as we will see later, the Cleveland Barons do
+not play anymore.
+
+## Goalie, by Franchise Data
+
+Here, I will create a data set that include the goalie data from five
+different franchises. I used the `goalie` function I created earlier in
+this vignette. I will run quite a few analyses on this set of data.
+
+**Code to Create Goalie Data (name: `GoalieData`)**
 
 ``` r
 NJ <- goalie(23)
@@ -544,8 +593,9 @@ PIT <- goalie(17)
 FLO <-goalie(13)
 
 GoalieData <- rbind(NJ, NY, PHL, PIT, FLO)
-GoalieData 
 ```
+
+**Print Resulting Data Set**
 
     ## # A tibble: 133 x 9
     ##    activePlayer firstName lastName franchiseName gamesPlayed mostGoalsAgains~
@@ -563,6 +613,11 @@ GoalieData
     ## # ... with 123 more rows, and 3 more variables: wins <int>, losses <int>,
     ## #   mostSavesOneGame <int>
 
+Here, I am going to create a contingency table to see the number of
+inactive and active goalies for each franchise. I do so by changing the
+`activePlayer` variable into a factor with labels “Inactive” and
+“Active”.
+
 **Code to Create Contingency Table of Active vs. Inactive Goalies for
 the 5 Franchises**
 
@@ -579,18 +634,43 @@ kable(table(GoalieData$activePlayer, GoalieData$franchiseName))
 | Inactive |                5 |                24 |                 26 |                  30 |                  32 |
 | Active   |                0 |                 3 |                  4 |                   4 |                   5 |
 
+### Analysis
+
+Within `GoalieData`, a majority of the data is from inactive goalies.
+This means, we will be analyzing data from seasons past. You can see
+that the Cleveland Barons have only 5 inactive goalies while the other
+four teams have over 20. This makes me believe that the Cleveland Barons
+existed for a short time, much less than the other teams. The other four
+teams have between 3-5 active goalies. It would seem that each active
+franchise would have between 3-5 goalies at one time.
+
 **Code to Create Bar Graphs for Table Above**
 
 ``` r
 g <- ggplot(GoalieData, aes(x = franchiseName))
 
-g + geom_bar(aes(fill = activePlayer), position = "dodge") 
+g + geom_bar(aes(fill = activePlayer), position = "dodge") +
+  labs(x = "Franchise") + scale_fill_discrete(name = " ")
 ```
 
 ![](README_files/figure-gfm/goalie%20bar%20graph-1.png)<!-- -->
 
+### Analysis
+
+This side-by-side bar graph shows the same information that is in the
+contingency table. Again, we can see that a majority of the data is from
+inactive goalies and that the Cleveland Barons have no active goalies.
+
 **Code to Create Summaries for a few variables for Inactive and Active
-Goalies**
+Goalies**  
+Here, I am going to compare the quantitative data from a few of
+variables within `GoalieData`. I do so using the `apply` function to
+calculate the summary statistics. These numbers will give us an idea of
+the skill of the goalies in our data set. I have kept the data separated
+into “Inactive vs. Active” but have kepts all of the franchises
+together. This is because some franchises have so few goalies.
+
+**Inactive Goalies**
 
 ``` r
 # Create Inactive Summaries
@@ -614,40 +694,76 @@ kable(mat, caption = "Summaries for Inactive Players")
 
 Summaries for Inactive Players
 
+**Active Goalies**
+
 ``` r
 # Create Active Summaries  
 ActiveData <- GoalieData %>% 
   filter(activePlayer == "Active")%>%
-  select("gamesPlayed", "losses", "mostSavesOneGame", "wins")
+  select("gamesPlayed", "wins", "losses", "mostSavesOneGame")
 
 stuff <- apply(ActiveData, 2, summary, digits = 3)
 
 kable(stuff, caption = "Summaries for Active Players")
 ```
 
-|         | gamesPlayed | losses | mostSavesOneGame |  wins |
-| ------- | ----------: | -----: | ---------------: | ----: |
-| Min.    |         1.0 |    0.0 |              7.0 |   0.0 |
-| 1st Qu. |        16.8 |    6.0 |             36.0 |   5.5 |
-| Median  |        48.0 |   14.5 |             44.5 |  23.0 |
-| Mean    |       122.0 |   40.4 |             40.9 |  60.4 |
-| 3rd Qu. |       181.0 |   54.8 |             48.5 |  91.2 |
-| Max.    |       691.0 |  216.0 |             52.0 | 375.0 |
+|         | gamesPlayed |  wins | losses | mostSavesOneGame |
+| ------- | ----------: | ----: | -----: | ---------------: |
+| Min.    |         1.0 |   0.0 |    0.0 |              7.0 |
+| 1st Qu. |        16.8 |   5.5 |    6.0 |             36.0 |
+| Median  |        48.0 |  23.0 |   14.5 |             44.5 |
+| Mean    |       122.0 |  60.4 |   40.4 |             40.9 |
+| 3rd Qu. |       181.0 |  91.2 |   54.8 |             48.5 |
+| Max.    |       691.0 | 375.0 |  216.0 |             52.0 |
 
 Summaries for Active Players
 
+### Analysis
+
+The inactive goalies have a large range for all of the variables. This
+would suggest that there is a wide variety within the skill level of the
+inactive goalies. Our means and medians for all of the variables except
+“Most Saves One Game” are far apart which suggests the data is right
+skewed. The maximum values for the first four variables are much larger
+than the rest of the data. These seem to be outliers. The IQR is a
+shorter length than the distance from the third quartile to the maximum.
+The summary stats for “Most Saves One Game” seem fairly symmetric; the
+mean and median are close in value. This shows that a large proportion
+of the goalies were closer in skill for that variable.
+
+For the active goalie data, the shape of the distributions are similar
+than the inactive; however, the maximum values are much less. Remember,
+there are fewer active goalies than inactive ones in our data sets.
+Overall, the analysis is the same as the inactive goalies.
+
 **Code to Create Scatterplot with `gamesPlayed` vs. `mostSavesOneGame`
-by Franchise**
+by Franchise**  
+Here, I am comparing the number of games played to the most saves in one
+game for all of the goalies. The goalies have been colored by franchise
+as well.
 
 ``` r
 g <- ggplot(GoalieData, aes(x = gamesPlayed, y = `mostSavesOneGame`, color = franchiseName))
 
 g + geom_point() + 
   labs(title = "Most Saves vs. Games Played", x = "Number of Games Played", y = "Most Saves in One Game")+
-  scale_fill_discrete(name = "Franchise Name")
+  scale_color_discrete(name = "Franchise Name")
 ```
 
 ![](README_files/figure-gfm/scatter%20goalie-1.png)<!-- -->
+
+### Analysis
+
+In the scatter plot, we can see the presence of a few outliers for the
+number of games played. A goalie on the New Jersey Devils has played
+more than 1200 games; however, this does not give him the highest saves
+in one game despite having played more than 800 more games than the rest
+of the goalies in the data set. You can see that a majority of the
+goalies in the data set have played less than 400 games. As most of the
+goalies are inactive, we can see that perhaps 400 games is the averager
+career span of a goalie. The few goalies we have who played more than
+that are the exception. A majority of the goalies had the most number of
+saves between 40 and 60 saves.
 
 ## Skater, by Franchise Data Analysis
 
@@ -676,7 +792,9 @@ SkaterData
 ``` r
 g <- ggplot(SkaterData, aes(x = mostLosses, y = mostWins, color = franchiseName))
 
-g + geom_point()
+g + geom_point() + 
+  labs(x = "Most Losses", y = "Most Wins", title = "Most Losses vs. Most Wins") +
+  scale_color_discrete(name = "Franchise Name")
 ```
 
-![](README_files/figure-gfm/skater%20graphic-1.png)<!-- --> \`\`\`
+![](README_files/figure-gfm/skater%20graphic-1.png)<!-- -->
