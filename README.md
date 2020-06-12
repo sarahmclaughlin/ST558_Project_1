@@ -2,7 +2,7 @@ Project 1
 ================
 Sarah McLaughlin
 6/5/2020
-
+  
   - [Introduction to JSON Data](#introduction-to-json-data)
       - [What is JSON Data?](#what-is-json-data)
       - [Where and why is JSON Data
