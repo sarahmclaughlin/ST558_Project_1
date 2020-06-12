@@ -767,6 +767,8 @@ saves between 40 and 60 saves.
 
 ## Skater, by Franchise Data Analysis
 
+**Code to Create Skater Data (name: `SkaterData`)**
+
 ``` r
 # Creating SkaterData data set 
 NJ <- skater(23)
@@ -776,8 +778,9 @@ PIT <- skater(17)
 FLO <-skater(13)
 
 SkaterData <- rbind(NJ, NY, PHL, PIT, FLO)
-SkaterData
 ```
+
+**Print Resulting Data Set**
 
     ## # A tibble: 5 x 8
     ##   franchiseId franchiseName fewestGoals mostGoals fewestLosses mostLosses
@@ -788,6 +791,8 @@ SkaterData
     ## 4          17 Pittsburgh P~         182       367           21         58
     ## 5          13 Cleveland Ba~         153       250           36         55
     ## # ... with 2 more variables: mostWins <int>, pointStreak <int>
+
+**Code to Create Scatterplot of “Most Losses vs. Most Wins”**
 
 ``` r
 g <- ggplot(SkaterData, aes(x = mostLosses, y = mostWins, color = franchiseName))
