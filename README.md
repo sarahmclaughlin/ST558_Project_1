@@ -803,3 +803,12 @@ g + geom_point() +
 ```
 
 ![](README_files/figure-gfm/skater%20graphic-1.png)<!-- -->
+
+### Analysis
+
+Here, we have a very small data set with only 5 skaters. In the
+scatterplot, we can easily compare the number of loss and wins for each
+of the skaters. We can see that the skater from the Philadelphia Flyers
+seems to be the best skater as he has the least number of losses but the
+third best number of wins. The skater from the Cleveland Barons has a
+high number of losses (55) and very few wins (less than 30).
